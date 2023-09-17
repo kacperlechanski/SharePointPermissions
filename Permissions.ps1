@@ -11,7 +11,7 @@ function ConnectSharePoint{
     Connect-PnPOnline -Url $url -Interactive
 }
 
-function GetSite{
+function GetPermissions{
     Write-Host "Wyswietlam dostepne biblioteki na witrynie:" -ForegroundColor Yellow
     Get-PnpList | Out-Host
     Start-Sleep -Seconds 3
@@ -21,10 +21,14 @@ function GetSite{
         if(!$items){
             Write-Host "Niepoprawna nazwa biblioteki. Sprobuj ponownie.." -ForegroundColor Red
             Start-Sleep -Seconds 3
-            GetSite
+            GetPermissions
+        }
+
+        for($i = 1; $i -le $items.Count; $i++) {
+            Get-PnPListItemPermission -List $listName -Identity $i
         }
     }
 }
 
 #ConnectSharePoint
-GetSite
+GetPermissions
