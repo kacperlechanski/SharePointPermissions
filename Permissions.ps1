@@ -1,0 +1,1 @@
+#Skrypt sprawdzający uprawnień do folderów w bibliotece dokumentów na SharePoint
