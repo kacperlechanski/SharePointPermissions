@@ -6,7 +6,25 @@
 #Połącz za pomocą modułu PnP.Powershell
 function ConnectSharePoint{
     $url = Read-Host "Podaj link do witryny SharePoint: "
+    Write-Host "Łączę do SharePoint.." -ForegroundColor Yellow
+    Start-Sleep -Seconds 3
     Connect-PnPOnline -Url $url -Interactive
 }
 
-ConnectSharePoint
+function GetSite{
+    Write-Host "Wyswietlam dostepne biblioteki na witrynie:" -ForegroundColor Yellow
+    Get-PnpList | Out-Host
+    Start-Sleep -Seconds 3
+    $listName = Read-Host "Wpisz nazwe biblioteki do sprawdzenia: "
+    if($listName){
+        $items = Get-PnPListItem -List $listName
+        if(!$items){
+            Write-Host "Niepoprawna nazwa biblioteki. Sprobuj ponownie.." -ForegroundColor Red
+            Start-Sleep -Seconds 3
+            GetSite
+        }
+    }
+}
+
+#ConnectSharePoint
+GetSite
