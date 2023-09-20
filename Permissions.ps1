@@ -12,23 +12,40 @@ function ConnectSharePoint{
 }
 
 function GetPermissions{
+    $pathFolders = "C:\Users\USER\OneDrive\IT Company Kacper Lechański\Scripts\folders.csv"
+    $pathPermissions = "C:\Users\USER\OneDrive\IT Company Kacper Lechański\Scripts\permissions.csv"
+    $delimiter = ","
+
     Write-Host "Wyswietlam dostepne biblioteki na witrynie:" -ForegroundColor Yellow
     Get-PnpList | Out-Host
-    Start-Sleep -Seconds 3
     $listName = Read-Host "Wpisz nazwe biblioteki do sprawdzenia: "
     if($listName){
-        $items = Get-PnPListItem -List $listName
+        $items = Get-PnPFolder -List $listName
+        $items | Select-object -Property Name | Export-Csv -Path $pathFolders -Delimiter $delimiter
         if(!$items){
             Write-Host "Niepoprawna nazwa biblioteki. Sprobuj ponownie.." -ForegroundColor Red
             Start-Sleep -Seconds 3
             GetPermissions
         }
-
         for($i = 1; $i -le $items.Count; $i++) {
-            Get-PnPListItemPermission -List $listName -Identity $i
-        }
+            Get-PnPListItemPermission -List $listName -Identity $i | Select-Object -Property Permissions | Export-Csv -Path $pathPermissions -Delimiter $delimiter
+        }    
     }
 }
 
 #ConnectSharePoint
 GetPermissions
+
+
+
+$libraryName = "Documents"
+$folderId = "1"
+
+$folder = Get-PnPFolder -List $libraryName                               
+
+if ($folder -ne $null) {
+    $folderName = $folder.Name
+    Write-Host "Folder Name: $folderName"        
+ } else {
+    Write-Host "Folder not found."        
+ }
