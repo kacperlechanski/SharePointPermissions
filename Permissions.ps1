@@ -28,24 +28,11 @@ function GetPermissions{
             GetPermissions
         }
         for($i = 1; $i -le $items.Count; $i++) {
-            Get-PnPListItemPermission -List $listName -Identity $i | Select-Object -Property Permissions | Export-Csv -Path $pathPermissions -Delimiter $delimiter
-        }    
+            $permissions = Get-PnPListItemPermission -List $listName -Identity $i | Select-Object -ExpandProperty Permissions
+            $permissions | Export-Csv -Path $pathPermissions -Append -NoTypeInformation | Format-Table *
+        }
     }
 }
 
 #ConnectSharePoint
 GetPermissions
-
-
-
-$libraryName = "Documents"
-$folderId = "1"
-
-$folder = Get-PnPFolder -List $libraryName                               
-
-if ($folder -ne $null) {
-    $folderName = $folder.Name
-    Write-Host "Folder Name: $folderName"        
- } else {
-    Write-Host "Folder not found."        
- }
